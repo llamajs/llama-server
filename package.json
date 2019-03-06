@@ -1,0 +1,25 @@
+{
+  "name": "llama-server",
+  "version": "0.0.0",
+  "description": "Log managemnet server",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc && node ./dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Almog Vagman Ciprut",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/amqplib": "^0.5.10",
+    "@types/mongoose": "^5.3.21",
+    "@types/node": "^11.10.4",
+    "standard-version": "^5.0.1",
+    "tslint": "^5.13.1",
+    "tslint-config-airbnb": "^5.11.1",
+    "typescript": "^3.3.3333"
+  },
+  "dependencies": {
+    "amqplib": "^0.5.3",
+    "mongoose": "^5.4.17"
+  }
+}
