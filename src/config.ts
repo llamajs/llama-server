@@ -9,8 +9,8 @@ export const config = {
         port: +(process.env.RMQ_PORT || 5672),
         password: process.env.RMQ_PASSWORD || 'guest',
         username: process.env.RMQ_USERNAME || 'guest',
-        exchange: process.env.RMQ_EXCHANGE || 'llamaLogs',
-        exchangeType: process.env.RMQ_EXCHANGE_TYPE || 'topic',
+        exchange: process.env.RMQ_EXCHANGE || 'Logs',
+        exchangeType: process.env.RMQ_EXCHANGE_TYPE || 'fanout',
         queue: process.env.RMQ_QUEUE || 'logs',
     },
     server: {
