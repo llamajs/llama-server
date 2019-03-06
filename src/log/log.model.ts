@@ -13,8 +13,9 @@ const logSchema: mongoose.Schema = new mongoose.Schema(
     },
     {
         autoIndex: false,
-        timestamps: { createdAt: true },
+        timestamps: { createdAt: true, updatedAt: false },
         id: true,
+        versionKey: false,
     });
 
 export const LogModel = mongoose.model<ILog & mongoose.Document>('Log', logSchema);
