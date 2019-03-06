@@ -12,8 +12,6 @@ export class LogSubscribeBroker {
         config.rabbitMQ.queue,
         '*',
         async (log: ILog) => {
-            console.log(log);
-            
             LogManager.createLog(log);
         });
     }
