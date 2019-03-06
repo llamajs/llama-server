@@ -8,10 +8,13 @@ export async function getHandler(req: IncomingMessage, res: ServerResponse) {
     if (req.method === 'GET') {
         if (req.url) {
             const parsedUrl = url.parse(req.url);
+            let filter = {};
+            let startIndex = 0;
+            let endIndex = 10;
 
             if (parsedUrl.query) {
                 const query = parse(parsedUrl.query);
-                const filter = {
+                filter = {
                     severity: query.severity,
                     name: query.name,
                     description: query.description,
@@ -19,16 +22,19 @@ export async function getHandler(req: IncomingMessage, res: ServerResponse) {
                     service: query.service,
                 } as Partial<ILog>;
 
-                const logs = await LogManager.getLogs(filter, Number(query.startIndex || 0), Number(query.endIndex || 0));
-
-                if (logs) {
-                    res.writeHead(200, { 'Content-Type': 'application/json' })
-                    res.end(JSON.stringify(logs));
-                }
+                startIndex = Number(query.startIndex || 0)
+                endIndex = Number(query.endIndex || 10)
             }
-        } else {
-            res.writeHead(400, { 'Content-Type': 'application/json' })
-            res.end(JSON.stringify({ error: 'Could not get logs' }));
+
+            const logs = await LogManager.getLogs(filter, startIndex, endIndex);
+
+            if (logs) {
+                res.writeHead(200, { 'Content-Type': 'application/json' })
+                res.end(JSON.stringify(logs));
+                return;
+            }
         }
     }
+    res.writeHead(400, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify({ error: 'Only GET methods are allowed' }));
 }
