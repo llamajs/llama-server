@@ -1,9 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { LogManager } from './log.manager';
-import { parse } from 'querystring';
-import * as url from 'url';
 import { ILog } from './log.interface';
-import { UnknownUrlStructureError } from '../errors/errors';
 import { ServerError } from '../errors/applicationError';
 import { bodyParser } from '../utils/body.parser';
 import { parseQuery } from '../utils/query.parser';
