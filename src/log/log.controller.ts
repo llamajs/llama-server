@@ -3,68 +3,41 @@ import { LogManager } from './log.manager';
 import { parse } from 'querystring';
 import * as url from 'url';
 import { ILog } from './log.interface';
-import { UnknownUrlStructureError, RequestMissingBodyError, UnknownBodyStructureError } from '../errors/errors';
-import { ServerError, ApplicationError } from '../errors/applicationError';
-import { reject } from 'bluebird';
+import { UnknownUrlStructureError } from '../errors/errors';
+import { ServerError } from '../errors/applicationError';
+import { bodyParser } from '../utils/body.parser';
+import { parseQuery } from '../utils/query.parser';
 
 export async function getHandler(req: IncomingMessage, res: ServerResponse) {
-    if (req.url) {
-        const parsedUrl = url.parse(req.url);
-        let filter = {};
-        let startIndex = 0;
-        let endIndex = 10;
+    const query = parseQuery(req);
 
-        if (parsedUrl.query) {
-            const query = parse(parsedUrl.query);
+    let filter = {};
+    let startIndex = 0;
+    let endIndex = 10;
 
-            filter = {
-                severity: query.severity,
-                name: query.name,
-                description: query.description,
-                hostname: query.hostname,
-                service: query.service,
-            } as Partial<ILog>;
+    if (query) {
+        filter = {
+            severity: query.severity,
+            name: query.name,
+            description: query.description,
+            hostname: query.hostname,
+            service: query.service,
+        } as Partial<ILog>;
 
-            startIndex = Number(query.startIndex || 0);
-            endIndex = Number(query.endIndex || 10);
-        }
-
-        const logs = await LogManager.getLogs(filter, startIndex, endIndex);
-
-        if (!logs) throw new ServerError();
-
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(logs));
-        return;
+        startIndex = Number(query.startIndex || 0);
+        endIndex = Number(query.endIndex || 10);
     }
 
-    throw new UnknownUrlStructureError();
-}
+    const logs = await LogManager.getLogs(filter, startIndex, endIndex);
 
-async function bodyParser(req: IncomingMessage) {
-    if (req.headers["content-type"] !== 'application/x-www-form-urlencoded') throw new UnknownBodyStructureError();
+    if (!logs) throw new ServerError();
 
-    let data = '';
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(logs));
 
-    req.on('data', (chunk) => {
-        data += chunk.toString();
-    });
-
-    return new Promise((resolve, reject) => {
-        req.on('data', () => {
-            if (!data) return reject(new RequestMissingBodyError());
-    
-            try {
-                return resolve(parse(data));
-            } catch (error) {
-                throw reject(new UnknownBodyStructureError());
-            }
-        });
-    });
+    return;
 }
 
 export async function postHandler(req: IncomingMessage, res: ServerResponse) {
-    const body = await bodyParser(req);
-
-    return LogManager.createLog(body as ILog);
+    return LogManager.createLog(await bodyParser(req) as ILog);
 }
