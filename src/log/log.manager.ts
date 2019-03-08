@@ -7,6 +7,6 @@ export class LogManager {
     }
 
     static createLog(log: ILog) {
-        LogRepository.create(log);
+        return LogRepository.create(log);
     }
 }

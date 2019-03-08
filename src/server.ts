@@ -12,7 +12,7 @@ export class Server {
 
     private constructor() {
         this.server = http.createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
-            errorHandler(res, await router(req, res));
+            router(req, res).catch(error => { errorHandler(res, error) });
         });
 
         this.server.listen(config.server.port, () => {

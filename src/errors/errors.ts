@@ -11,3 +11,15 @@ export class UnknownUrlStructureError extends UserError {
         super('Bad url structure', 400);
     }
 }
+
+export class RequestMissingBodyError extends UserError {
+    constructor() {
+        super('Request has no body', 400);
+    }
+}
+
+export class UnknownBodyStructureError extends UserError {
+    constructor() {
+        super('Bad body structure', 400);
+    }
+}

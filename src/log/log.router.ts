@@ -9,6 +9,6 @@ export function router(req: IncomingMessage, res: ServerResponse) {
         case 'POST':
             return postHandler(req, res)
         default:
-            return new ForbiddenMethodError();
+            throw new ForbiddenMethodError();
     }
 }
