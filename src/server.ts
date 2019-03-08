@@ -1,20 +1,22 @@
 import * as http from 'http';
 import { config } from './config';
-import { getHandler } from './log/log.controller';
+import { router } from './log/log.router';
+import { errorHandler } from './errors/error.handler';
 
 export class Server {
     private server: http.Server;
 
-    public static bootstrap(): Server {
+    public static start(): Server {
         return new Server();
     }
 
     private constructor() {
-        this.server = http.createServer(getHandler);
+        this.server = http.createServer(async (req: http.IncomingMessage, res: http.ServerResponse) => {
+            errorHandler(res, await router(req, res));
+        });
+
         this.server.listen(config.server.port, () => {
             console.log(`Server running in ${process.env.NODE_ENV || 'development'} environment on port ${config.server.port}`);
-
-
         });
     }
 }

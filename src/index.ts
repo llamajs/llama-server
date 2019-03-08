@@ -43,5 +43,5 @@ process.on('SIGINT', async () => {
     await rabbit.connect();
     await LogSubscribeBroker.subscribe();
     console.log('Starting server');
-    const server: Server = Server.bootstrap();
+    const server: Server = Server.start();
 })();
