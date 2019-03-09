@@ -1,26 +1,13 @@
 
 import { ILog } from './log.interface';
-import { LogModel } from './log.model';
+import { MongoDB } from '../utils/mongo.db';
 
 export class LogRepository {
-    static create(log: ILog)
-        : Promise<ILog> {
-        return LogModel.create(log);
+    static create(log: ILog) {
+        return MongoDB.insert('logs', log);
     }
 
-    static getMany(logFilter: Partial<ILog>, startIndex: number = 0, endIndex: number = 0)
-        : Promise<ILog[]> {
-        return LogModel
-        .find(logFilter)
-        .skip(startIndex)
-        .limit(endIndex - startIndex)
-        .exec();
-    }
-
-    static getAmount(logFilter: Partial<ILog>)
-        : Promise<number> {
-        return LogModel
-            .countDocuments(logFilter)
-            .exec();
+    static getMany(logFilter: Partial<ILog>, startIndex: number = 0, endIndex: number = 10) {
+        return MongoDB.getMany('logs', logFilter, startIndex, startIndex + endIndex);
     }
 }

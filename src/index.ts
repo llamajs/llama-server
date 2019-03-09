@@ -1,9 +1,10 @@
 
-import * as mongoose from 'mongoose';
 import * as rabbit from './utils/rabbit';
 import { Server } from './server';
 import { config } from './config';
 import { LogSubscribeBroker } from './log/log.broker.subscribe';
+import { LogRepository } from './log/log.repository';
+import { MongoDB } from './utils/mongo.db';
 
 process.on('uncaughtException', (err) => {
     console.error('Unhandled Exception', err.stack);
@@ -23,8 +24,6 @@ process.on('SIGINT', async () => {
     try {
         console.log('User Termination');
 
-        await mongoose.disconnect();
-
         rabbit.closeConnection();
         process.exit(0);
     } catch (error) {
@@ -33,15 +32,9 @@ process.on('SIGINT', async () => {
 });
 
 (async () => {
-    await mongoose.connect(
-        `mongodb://${config.db.host}:${config.db.port}/${config.db.name}`,
-        { useNewUrlParser: true },
-    );
-
-    console.log(`[MongoDB] connected to port ${config.db.port}`);
-
+    await MongoDB.connect();
     await rabbit.connect();
     await LogSubscribeBroker.subscribe();
     console.log('Starting server');
-    const server: Server = Server.start();
+    Server.start();
 })();

@@ -20,6 +20,6 @@
   },
   "dependencies": {
     "amqplib": "^0.5.3",
-    "mongoose": "^5.4.17"
+    "mongodb": "^3.1.13"
   }
 }

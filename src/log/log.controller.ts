@@ -6,26 +6,20 @@ import { bodyParser } from '../utils/body.parser';
 import { parseQuery } from '../utils/query.parser';
 
 export async function getHandler(req: IncomingMessage, res: ServerResponse) {
-    const query = parseQuery(req);
+    const query = parseQuery(req) || {};
 
-    let filter = {};
     let startIndex = 0;
     let endIndex = 10;
 
     if (query) {
-        filter = {
-            severity: query.severity,
-            name: query.name,
-            description: query.description,
-            hostname: query.hostname,
-            service: query.service,
-        } as Partial<ILog>;
-
         startIndex = Number(query.startIndex || 0);
         endIndex = Number(query.endIndex || 10);
+
+        delete query.startIndex;
+        delete query.endIndex;
     }
 
-    const logs = await LogManager.getLogs(filter, startIndex, endIndex);
+    const logs = await LogManager.getLogs(query, startIndex, endIndex);
 
     if (!logs) throw new ServerError();
 
@@ -36,5 +30,10 @@ export async function getHandler(req: IncomingMessage, res: ServerResponse) {
 }
 
 export async function postHandler(req: IncomingMessage, res: ServerResponse) {
-    return LogManager.createLog(await bodyParser(req) as ILog);
+    const results = await LogManager.createLog(await bodyParser(req) as ILog);
+
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(results));
+
+    return;
 }
