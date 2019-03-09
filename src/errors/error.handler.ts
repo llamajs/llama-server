@@ -18,5 +18,6 @@ export function userErrorHandler(res: ServerResponse, error: UserError) {
 export function undefinedErrorHandler(res: ServerResponse, error: UserError) {
     res.writeHead(error.status || 500, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(error));
+    throw error;
 }
 
