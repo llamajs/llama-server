@@ -3,6 +3,7 @@ export const config = {
         host: process.env.DB_SERVER || 'localhost',
         name: process.env.DB_NAME || 'llamaLogs',
         port: +(process.env.DB_PORT || 27017),
+        collection: process.env.DB_COLLECTION || 'logs',
     },
     rabbitMQ: {
         host: process.env.RMQ_HOST || 'localhost',

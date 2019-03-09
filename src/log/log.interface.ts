@@ -1,8 +1,11 @@
 export interface ILog {
-    severity: string;
     name: string;
     description: string;
-    timestamp: Date;
-    hostname: string;
+    severity: string;
     service: string;
+    hostname: string;
+    timestamp: Date;
+    transactionId?: string;
+    user?: string;
+    [ key: string ]: any; 
 }

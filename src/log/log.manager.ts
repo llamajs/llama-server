@@ -7,6 +7,12 @@ export class LogManager {
     }
 
     static createLog(log: ILog) {
+        log = {
+            ...log,
+            timestamp: new Date(log.timestamp),
+            createdAt: new Date(),
+        };
+
         return LogRepository.create(log);
     }
 }
